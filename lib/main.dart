@@ -43,6 +43,11 @@ class MyAppState extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void removeFavorite(WordPair pair) {
+    favorites.remove(pair);
+    notifyListeners();
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -182,6 +187,7 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     var appState = context.watch<MyAppState>();
 
     if (appState.favorites.isEmpty) {
@@ -197,8 +203,17 @@ class FavoritesPage extends StatelessWidget {
           child: Text('You have ${appState.favorites.length} favorites:'),
         ),
         ...appState.favorites.map((pair) => ListTile(
-              leading: const Icon(Icons.favorite),
+              leading: Icon(
+                Icons.favorite,
+                color: theme.colorScheme.primary,
+              ),
               title: Text(pair.asLowerCase),
+              trailing: IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: () {
+                  appState.removeFavorite(pair);
+                },
+              ),
             ))
       ],
     );
